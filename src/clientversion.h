@@ -11,6 +11,9 @@
 #define CLIENT_VERSION_REVISION    1
 #define CLIENT_VERSION_BUILD       0
 
+// Updating form 1.5.0 to newer versions will require a new full sync or bootstrap. Please see forum or contact developers.
+// 1.5.1+ will not work with old db files!
+
 // Set to true for release, false for prerelease or test build
 #define CLIENT_VERSION_IS_RELEASE  true
 
