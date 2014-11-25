@@ -60,8 +60,8 @@ signals:
     void numConnectionsChanged(int count);
     void numBlocksChanged(int count, int countOfPeers);
 
-    //! Asynchronous error notification
-    void error(const QString &title, const QString &message, bool modal);
+    //! Asynchronous message notification
+    void message(const QString &title, const QString &message, unsigned int style);
 
 public slots:
     void updateTimer();
