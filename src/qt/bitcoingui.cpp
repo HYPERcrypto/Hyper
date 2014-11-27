@@ -85,7 +85,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     QString ss("QMenuBar::item { background-color: transparent; color: #AEB404 }"); // Use background-color instead of background
      menuBar()->setStyleSheet(ss);
     
-    resize(850, 550);
+    resize(650, 450);
     setWindowTitle(tr("Hyper") + " - " + tr("Wallet"));
 #ifndef Q_OS_MAC
     qApp->setWindowIcon(QIcon(":icons/bitcoin"));
@@ -620,6 +620,10 @@ void BitcoinGUI::setNumBlocks(int count, int nTotalBlocks)
     labelBlocksIcon->setToolTip(tooltip);
     progressBarLabel->setToolTip(tooltip);
     progressBar->setToolTip(tooltip);
+    if(GetBoolArg("-chart", true) && count > 0 && nTotalBlocks > 0)
+    {
+        overviewPage->updatePlot(count);
+    }
 }
 
 void BitcoinGUI::message(const QString &title, const QString &message, unsigned int style)

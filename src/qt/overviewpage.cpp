@@ -10,12 +10,17 @@
 #include "guiutil.h"
 #include "guiconstants.h"
 #include "askpassphrasedialog.h"
+#include "main.h"
+#include "bitcoinrpc.h"
+#include "util.h"
+
+double GetPoSKernelPS2(const CBlockIndex* pindex);
 
 #include <QAbstractItemDelegate>
 #include <QPainter>
 
-#define DECORATION_SIZE 64
-#define NUM_ITEMS 6
+#define DECORATION_SIZE 32
+#define NUM_ITEMS 4
 
 class TxViewDelegate : public QAbstractItemDelegate
 {
@@ -35,7 +40,7 @@ public:
         QRect mainRect = option.rect;
         QRect decorationRect(mainRect.topLeft(), QSize(DECORATION_SIZE, DECORATION_SIZE));
         int xspace = DECORATION_SIZE + 8;
-        int ypad = 6;
+        int ypad = 3;
         int halfheight = (mainRect.height() - 2*ypad)/2;
         QRect amountRect(mainRect.left() + xspace, mainRect.top()+ypad, mainRect.width() - xspace, halfheight);
         QRect addressRect(mainRect.left() + xspace, mainRect.top()+ypad+halfheight, mainRect.width() - xspace, halfheight);
@@ -123,6 +128,51 @@ OverviewPage::OverviewPage(QWidget *parent) :
 
     // start with displaying the "out of sync" warnings
     showOutOfSyncWarning(true);
+    if(GetBoolArg("-chart", true))
+    {
+        // setup Plot
+        // create graph
+        ui->diffplot->addGraph();
+
+        // Argh can't get the background to work.
+        //QPixmap background = QPixmap(":/images/splash_testnet");
+        //ui->diffplot->setBackground(background);
+        //ui->diffplot->setBackground(QBrush(QWidget::palette().color(this->backgroundRole())));
+
+        // give the axes some labels:
+        ui->diffplot->xAxis->setLabel("Blocks");
+        ui->diffplot->yAxis->setLabel("Difficulty");
+
+        // set the pens
+        ui->diffplot->graph(0)->setPen(QPen(Qt::yellow));
+
+        ui->diffplot->xAxis->setTickLabelColor(Qt::yellow);
+        ui->diffplot->xAxis->setBasePen(QPen(Qt::yellow));
+        ui->diffplot->xAxis->setLabelColor(Qt::yellow);
+        ui->diffplot->xAxis->setTickPen(QPen(Qt::yellow));
+        ui->diffplot->xAxis->setSubTickPen(QPen(Qt::yellow));
+        ui->diffplot->yAxis->setTickLabelColor(Qt::yellow);
+        ui->diffplot->yAxis->setBasePen(QPen(Qt::yellow));
+        ui->diffplot->yAxis->setLabelColor(Qt::yellow);
+        ui->diffplot->yAxis->setTickPen(QPen(Qt::yellow));
+        ui->diffplot->yAxis->setSubTickPen(QPen(Qt::yellow));
+        ui->diffplot->yAxis->grid()->setPen(QPen(Qt::yellow));
+        ui->diffplot->xAxis->grid()->setPen(QPen(Qt::yellow));
+		
+        ui->diffplot->graph(0)->setLineStyle(QCPGraph::lsLine);
+
+        ui->diffplot->setBackground(Qt::transparent);
+        ui->diffplot->axisRect()->setBackground(Qt::transparent);
+
+        // set axes label fonts:
+        QFont label = font();
+        ui->diffplot->xAxis->setLabelFont(label);
+        ui->diffplot->yAxis->setLabelFont(label);
+    }
+    else
+    {
+        ui->diffplot->setVisible(false);
+    }
 }
 
 void OverviewPage::handleTransactionClicked(const QModelIndex &index)
@@ -134,6 +184,67 @@ void OverviewPage::handleTransactionClicked(const QModelIndex &index)
 OverviewPage::~OverviewPage()
 {
     delete ui;
+}
+
+void OverviewPage::updatePlot(int count)
+{
+    static int64_t lastUpdate = 0;
+    // Double Check to make sure we don't try to update the plot when it is disabled
+    if(!GetBoolArg("-chart", true)) { return; }
+    if (GetTime() - lastUpdate < 180) { return; } // This is just so it doesn't redraw rapidly during syncing
+
+    if(fDebug) { printf("Plot: Getting Ready: pindexBest: %p\n", pindexBest); }
+    	
+		bool fProofOfStake = (nBestHeight > 41000);
+    if (fProofOfStake)
+        ui->diffplot->yAxis->setLabel("Stake Weight");
+		else
+        ui->diffplot->yAxis->setLabel("Difficulty");
+
+    int numLookBack = 8600;
+    double diffMax = 0;
+    const CBlockIndex* pindex = GetLastBlockIndex(pindexBest, fProofOfStake);
+    int height = pindex->nHeight;
+    int xStart = std::max<int>(height-numLookBack, 0) + 1;
+    int xEnd = height;
+
+    // Start at the end and walk backwards
+    int i = numLookBack-1;
+    int x = xEnd;
+
+    // This should be a noop if the size is already 2000
+    vX.resize(numLookBack);
+    vY.resize(numLookBack);
+
+    const CBlockIndex* itr = pindex;
+    while(i >= 0 && itr != NULL)
+    {
+        vX[i] = itr->nHeight;
+        if (itr->nHeight < xStart) {
+        	xStart = itr->nHeight;
+        }
+        vY[i] = fProofOfStake ? GetPoSKernelPS2(itr) : GetDifficulty(itr);
+        diffMax = std::max<double>(diffMax, vY[i]);
+
+        itr = GetLastBlockIndex(itr->pprev, fProofOfStake);
+        i--;
+        x--;
+    }
+
+    ui->diffplot->graph(0)->setData(vX, vY);
+
+    // set axes ranges, so we see all data:
+    ui->diffplot->xAxis->setRange((double)xStart, (double)xEnd);
+    ui->diffplot->yAxis->setRange(0, diffMax+(diffMax/10));
+
+    ui->diffplot->xAxis->setAutoSubTicks(false);
+    ui->diffplot->yAxis->setAutoSubTicks(false);
+    ui->diffplot->xAxis->setSubTickCount(0);
+    ui->diffplot->yAxis->setSubTickCount(0);
+
+    ui->diffplot->replot();
+
+    lastUpdate = GetTime();
 }
 
 void OverviewPage::setBalance(qint64 balance, qint64 stake, qint64 unconfirmedBalance, qint64 immatureBalance)
