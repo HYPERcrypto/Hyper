@@ -156,8 +156,8 @@ OverviewPage::OverviewPage(QWidget *parent) :
         ui->diffplot->yAxis->setLabelColor(Qt::yellow);
         ui->diffplot->yAxis->setTickPen(QPen(Qt::yellow));
         ui->diffplot->yAxis->setSubTickPen(QPen(Qt::yellow));
-        ui->diffplot->yAxis->grid()->setPen(QPen(Qt::yellow));
-        ui->diffplot->xAxis->grid()->setPen(QPen(Qt::yellow));
+        ui->diffplot->yAxis->grid()->setPen(QPen(QColor(Qt::yellow), 1, Qt::DotLine));		
+        ui->diffplot->xAxis->grid()->setPen(QPen(QColor(Qt::yellow), 1, Qt::DotLine));
 		
         ui->diffplot->graph(0)->setLineStyle(QCPGraph::lsLine);
 
