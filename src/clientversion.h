@@ -8,7 +8,7 @@
 // These need to be macros, as version.cpp's and bitcoin-qt.rc's voodoo requires it
 #define CLIENT_VERSION_MAJOR       1
 #define CLIENT_VERSION_MINOR       5
-#define CLIENT_VERSION_REVISION    1
+#define CLIENT_VERSION_REVISION    2
 #define CLIENT_VERSION_BUILD       0
 
 // Updating form 1.5.0 to newer versions will require a new full sync or bootstrap. Please see forum or contact developers.
