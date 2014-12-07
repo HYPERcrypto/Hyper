@@ -1084,6 +1084,13 @@ void BitcoinGUI::unlockWalletForMint()
         AskPassphraseDialog dlg(AskPassphraseDialog::UnlockForMint, this);
         dlg.setModel(walletModel);
         dlg.exec();
+
+        // Only show message if unlock is sucessfull.
+        if(walletModel->getEncryptionStatus() == WalletModel::Unlocked)
+          message(tr("Unlock Wallet Information"),
+                  tr("Wallet has been unlocked. \n"
+                     "Proof of Stake has started.\n")
+                  ,CClientUIInterface::MSG_INFORMATION);
     }
 }
 
@@ -1095,6 +1102,12 @@ void BitcoinGUI::lockWallet()
     // Lock wallet when requested by user
     if(walletModel->getEncryptionStatus() == WalletModel::Unlocked)
          walletModel->setWalletLocked(true,"",true);
+
+     message(tr("Lock Wallet Information"),
+            tr("Wallet has been locked.\n"
+                  "Proof of Stake has stopped.\n")
+            ,CClientUIInterface::MSG_INFORMATION);
+
 }
 
 void BitcoinGUI::showNormalIfMinimized(bool fToggleHidden)
