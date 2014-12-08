@@ -271,24 +271,6 @@ void OverviewPage::setNumTransactions(int count)
     ui->labelNumTransactions->setText(QLocale::system().toString(count));
 }
 
-void OverviewPage::unlockWallet()
-{
-    if(walletModel->getEncryptionStatus() == WalletModel::Locked)
-    {
-        AskPassphraseDialog dlg(AskPassphraseDialog::Unlock, this);
-        dlg.setModel(walletModel);
-        if(dlg.exec() == QDialog::Accepted)
-        {
-            ui->unlockWalletButton->setText(QString("Lock Wallet"));
-        }
-    }
-    else
-    {
-        walletModel->setWalletLocked(true);
-        ui->unlockWalletButton->setText(QString("Unlock Wallet"));
-    }
-}
-
 void OverviewPage::setClientModel(ClientModel *model)
 {
     this->clientModel = model;
@@ -327,13 +309,6 @@ void OverviewPage::setWalletModel(WalletModel *model)
 
         connect(model->getOptionsModel(), SIGNAL(displayUnitChanged(int)), this, SLOT(updateDisplayUnit()));
 
-        // Unlock wallet button
-        WalletModel::EncryptionStatus status = model->getEncryptionStatus();
-        if(status == WalletModel::Unencrypted)
-        {
-            ui->unlockWalletButton->setDisabled(true);
-        }
-        connect(ui->unlockWalletButton, SIGNAL(clicked()), this, SLOT(unlockWallet()));
      }
 
     // update the display unit, to not use the default ("HYPER")
