@@ -50,6 +50,7 @@
 #include <QDateTime>
 #include <QMovie>
 #include <QFileDialog>
+#include <QDesktopServices>
 #if QT_VERSION < 0x050000
 #include <QDesktopServices>
 #else
@@ -78,16 +79,11 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     notificator(0),
     rpcConsole(0)
 {
-    
-        setStyleSheet("color: #AEB404;"
-    "font: 75 bold 10pt;"
-"background-image: url(:/Background/res/images/abstract-background-13.png);");
-    
-    
-    QString ss("QMenuBar::item { background-color: transparent; color: #AEB404 }"); // Use background-color instead of background
-     menuBar()->setStyleSheet(ss);
-    
-    resize(700, 550);
+  	QFile style(":/text/res/text/style.qss");
+	style.open(QFile::ReadOnly);
+	setStyleSheet(QString::fromUtf8(style.readAll()));
+	
+    resize(850, 550);
     setWindowTitle(tr("Hyper") + " - " + tr("Wallet"));
 #ifndef Q_OS_MAC
     qApp->setWindowIcon(QIcon(":icons/bitcoin"));
@@ -133,17 +129,17 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
         overviewPage->setStyleSheet("background-color: transparent");
     overviewPage->setStyleSheet("background: transparent");
     centralWidget->addWidget(transactionsPage);
-        transactionsPage->setStyleSheet("background-color: transparent");
-    transactionsPage->setStyleSheet("background: transparent");
+        transactionsPage->setStyleSheet("background-color: black");
+    transactionsPage->setStyleSheet("background: black");
     centralWidget->addWidget(addressBookPage);
-        addressBookPage->setStyleSheet("background-color: transparent");
-    addressBookPage->setStyleSheet("background: transparent");
+        addressBookPage->setStyleSheet("background-color: black");
+    addressBookPage->setStyleSheet("background: black");
     centralWidget->addWidget(receiveCoinsPage);
-        receiveCoinsPage->setStyleSheet("background-color: transparent");
-    receiveCoinsPage->setStyleSheet("background: transparent");
+        receiveCoinsPage->setStyleSheet("background-color: black");
+    receiveCoinsPage->setStyleSheet("background: black");
     centralWidget->addWidget(sendCoinsPage);
-        sendCoinsPage->setStyleSheet("background-color: transparent");
-    sendCoinsPage->setStyleSheet("background: transparent");
+        sendCoinsPage->setStyleSheet("background-color: black");
+    sendCoinsPage->setStyleSheet("background: black");
     setCentralWidget(centralWidget);
 
     // Create status bar
@@ -189,7 +185,6 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     statusBar()->addPermanentWidget(frameBlocks);
 
     syncIconMovie = new QMovie(":/movies/update_spinner", "mng", this);
-	// this->setStyleSheet("background-color: #ceffee;");
 
     // Clicking on a transaction on the overview page simply sends you to transaction history page
     connect(overviewPage, SIGNAL(transactionClicked(QModelIndex)), this, SLOT(gotoHistoryPage()));
@@ -225,6 +220,18 @@ void BitcoinGUI::createActions()
 {
     QActionGroup *tabGroup = new QActionGroup(this);
 
+    actionBittrex = new QAction(QIcon(":/icons/bittrex"), tr(""), this);
+    actionBittrex->setStatusTip(tr("Buy and Sell Hyper at Bittrex "));
+    actionBittrex->setToolTip(actionBittrex->statusTip());
+
+    actionWiki = new QAction(QIcon(":/icons/wiki"), tr(""), this);
+    actionWiki->setStatusTip(tr("Hyper wiki"));
+    actionWiki->setToolTip(actionWiki->statusTip());
+
+    actionHome = new QAction(QIcon(":/icons/home"), tr(""), this);
+    actionHome->setStatusTip(tr("Hypercrypto.com"));
+    actionHome->setToolTip(actionHome->statusTip());
+	
     overviewAction = new QAction(QIcon(":/icons/overview"), tr("&Overview"), this);
     overviewAction->setStatusTip(tr("Show general overview of wallet"));
     overviewAction->setToolTip(overviewAction->statusTip());
@@ -232,21 +239,21 @@ void BitcoinGUI::createActions()
     overviewAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_1));
     tabGroup->addAction(overviewAction);
 
-    sendCoinsAction = new QAction(QIcon(":/icons/send"), tr("&Send coins"), this);
+    sendCoinsAction = new QAction(QIcon(":/icons/send"), tr("&Send"), this);
     sendCoinsAction->setStatusTip(tr("Send coins to a Hyper address"));
     sendCoinsAction->setToolTip(sendCoinsAction->statusTip());
     sendCoinsAction->setCheckable(true);
     sendCoinsAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_2));
     tabGroup->addAction(sendCoinsAction);
 
-    receiveCoinsAction = new QAction(QIcon(":/icons/receiving_addresses"), tr("&Receive coins"), this);
+    receiveCoinsAction = new QAction(QIcon(":/icons/receiving_addresses"), tr("&Receive"), this);
     receiveCoinsAction->setStatusTip(tr("Show the list of addresses for receiving payments"));
     receiveCoinsAction->setToolTip(receiveCoinsAction->statusTip());
     receiveCoinsAction->setCheckable(true);
     receiveCoinsAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_3));
     tabGroup->addAction(receiveCoinsAction);
 
-    historyAction = new QAction(QIcon(":/icons/history"), tr("&Transactions"), this);
+    historyAction = new QAction(QIcon(":/icons/history"), tr("&History"), this);
     historyAction->setStatusTip(tr("Browse transaction history"));
     historyAction->setToolTip(historyAction->statusTip());
     historyAction->setCheckable(true);
@@ -283,7 +290,7 @@ void BitcoinGUI::createActions()
     aboutAction->setStatusTip(tr("Show information about Hyper"));
     aboutAction->setMenuRole(QAction::AboutRole);
 
-    aboutQtAction = new QAction(QIcon(":/trolltech/qmessagebox/images/qtlogo-64.png"), tr("About &Qt"), this);
+    aboutQtAction = new QAction(QIcon(":/icons/qtlogo"), tr("About &Qt"), this);
     aboutQtAction->setStatusTip(tr("Show information about Qt"));
     aboutQtAction->setMenuRole(QAction::AboutQtRole);
 
@@ -315,10 +322,10 @@ void BitcoinGUI::createActions()
     backupWalletAction->setStatusTip(tr("Backup wallet to another location"));
 
     dumpWalletAction = new QAction(QIcon(":/icons/export2"), tr("&Export Wallet..."), this);
-    dumpWalletAction->setStatusTip(tr("Export wallet's keys to a text file"));
+    dumpWalletAction->setStatusTip(tr("Export wallet's private keys to a text file - Experts ONLY!"));
 
     importWalletAction = new QAction(QIcon(":/icons/import"), tr("&Import Wallet..."), this);
-    importWalletAction->setStatusTip(tr("Import a file's keys into a wallet"));
+    importWalletAction->setStatusTip(tr("Import a file's private keys into a wallet - Experts ONLY!"));
 
     changePassphraseAction = new QAction(QIcon(":/icons/key"), tr("&Change Passphrase..."), this);
     changePassphraseAction->setStatusTip(tr("Change the passphrase used for wallet encryption"));
@@ -399,8 +406,6 @@ void BitcoinGUI::createMenuBar()
     help->addAction(aboutAction);
     help->addAction(aboutQtAction);
 
-	// QString ss("QMenuBar::item { background-color: #ceffee; color: black }"); 
-    // appMenuBar->setStyleSheet(ss);
 }
 
 void BitcoinGUI::createToolBars()
@@ -416,6 +421,13 @@ void BitcoinGUI::createToolBars()
     QToolBar *toolbar2 = addToolBar(tr("Actions toolbar"));
     toolbar2->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     toolbar2->addAction(exportAction);
+    toolbar2->addAction(actionBittrex);
+    toolbar2->addAction(actionHome);
+    toolbar2->addAction(actionWiki);
+	
+    connect(actionBittrex, SIGNAL(triggered()), this, SLOT(openBittrex()));
+    connect(actionHome, SIGNAL(triggered()), this, SLOT(openHome()));
+    connect(actionWiki, SIGNAL(triggered()), this, SLOT(openWiki()));
 }
 
 void BitcoinGUI::setClientModel(ClientModel *clientModel)
@@ -954,6 +966,7 @@ void BitcoinGUI::setEncryptionStatus(int status)
         encryptWalletAction->setEnabled(false); // TODO: decrypt currently not supported
         unlockWalletAction->setEnabled(false);
         lockWalletAction->setEnabled(true);
+        unlockWalletAction->setVisible(false);
         break;
     case WalletModel::Locked:
         labelEncryptionIcon->show();
@@ -965,6 +978,7 @@ void BitcoinGUI::setEncryptionStatus(int status)
         changePassphraseAction->setEnabled(true);
         encryptWalletAction->setEnabled(false); // TODO: decrypt currently not supported
         unlockWalletAction->setEnabled(true);
+        unlockWalletAction->setVisible(true);
         lockWalletAction->setEnabled(false);
         break;
     }
@@ -1207,4 +1221,16 @@ void BitcoinGUI::showNormalIfMinimized(bool fToggleHidden)
 void BitcoinGUI::toggleHidden()
 {
     showNormalIfMinimized(true);
+}
+
+void BitcoinGUI::openBittrex() {
+    QDesktopServices::openUrl(QUrl("https://bittrex.com/Market/Index?MarketName=BTC-HYPER"));
+}
+
+void BitcoinGUI::openHome() {
+    QDesktopServices::openUrl(QUrl("http://hypercrypto.com/"));
+}
+
+void BitcoinGUI::openWiki() {
+    QDesktopServices::openUrl(QUrl("http://hypercrypto.com/wiki/index.php/Main_Page"));
 }

@@ -75,6 +75,9 @@ private:
 
     QMenuBar *appMenuBar;
     QAction *overviewAction;
+    QAction *actionBittrex;
+    QAction *actionHome;
+    QAction *actionWiki;
     QAction *historyAction;
     QAction *quitAction;
     QAction *sendCoinsAction;
@@ -201,6 +204,9 @@ private slots:
     void showNormalIfMinimized(bool fToggleHidden = false);
     /** simply calls showNormalIfMinimized(true) for use in SLOT() macro */
     void toggleHidden();
+    void openBittrex();
+    void openHome();
+    void openWiki();
 };
 
 #endif
