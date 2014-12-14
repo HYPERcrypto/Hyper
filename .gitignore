@@ -6,6 +6,7 @@
 /Makefile
 /qrc_Background.cpp
 /qrc_bitcoin.cpp
+src/src.pro
 
 #################
 ## Eclipse
