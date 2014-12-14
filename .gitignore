@@ -1,6 +1,11 @@
-# Executables
-Hyperd
-Hyper-qt
+##################
+## Build Artifacts
+##################
+/Hyperd
+/Hyper-qt
+/Makefile
+/qrc_Background.cpp
+/qrc_bitcoin.cpp
 
 #################
 ## Eclipse
