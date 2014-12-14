@@ -25,7 +25,7 @@ Dependencies
  Library     Purpose           Description
  -------     -------           -----------
  libssl      SSL Support       Secure communications
- libdb4.8    Berkeley DB       Blockchain & wallet storage
+ libdb++     Berkeley DB       Blockchain & wallet storage
  libboost    Boost             C++ Library
  miniupnpc   UPnP Support      Optional firewall-jumping support
  libqrencode QRCode generation Optional QRCode generation
@@ -52,25 +52,14 @@ Licenses of statically linked libraries:
  Boost         MIT-like license
  miniupnpc     New (3-clause) BSD license
 
-Versions used in this release:
- GCC           4.3.3
- OpenSSL       0.9.8g
- Berkeley DB   4.8.30.NC
- Boost         1.37
- miniupnpc     1.6
-
 Dependency Build Instructions: Ubuntu & Debian
 ----------------------------------------------
 sudo apt-get install build-essential
 sudo apt-get install libssl-dev
-sudo apt-get install libdb4.8-dev
-sudo apt-get install libdb4.8++-dev
- Boost 1.40+: sudo apt-get install libboost-all-dev
- or Boost 1.37: sudo apt-get install libboost1.37-dev
+sudo apt-get install libdb++-dev
+sudo apt-get install libboost-dev libboost-system-dev libboost-filesystem-dev libboost-program-options-dev libboost-thread-dev
+sudo apt-get install libminiupnpc-dev
 sudo apt-get install libqrencode-dev
-
-If using Boost 1.37, append -mt to the boost libraries in the makefile.
-
 
 Dependency Build Instructions: Gentoo
 -------------------------------------
