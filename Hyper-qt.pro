@@ -326,6 +326,10 @@ OTHER_FILES += \
     doc/*.rst doc/*.txt doc/README README.md res/bitcoin-qt.rc src/test/*.cpp src/test/*.h src/qt/test/*.cpp src/qt/test/*.h
 
 # platform specific defaults, if not overridden on command line
+isEmpty(BOOST_LIB_SUFFIX) {
+    macx:BOOST_LIB_SUFFIX = -mt
+    windows:BOOST_LIB_SUFFIX = -mgw44-mt-s-1_50
+}
 
 isEmpty(BOOST_THREAD_LIB_SUFFIX) {
     BOOST_THREAD_LIB_SUFFIX = $$BOOST_LIB_SUFFIX
