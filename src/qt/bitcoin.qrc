@@ -45,9 +45,9 @@
         <file alias="export2">res/icons/export2.png</file>
         <file alias="inspect">res/icons/inspect.png</file>
         <file alias="repair">res/icons/repair.png</file>
-        <file alias="bittrex">res/icons/hyper2.png</file>
+        <file alias="bittrex">res/icons/bittrex.png</file>
         <file alias="home">res/icons/hyper2.png</file>
-        <file alias="wiki">res/icons/hyper2.png</file>
+        <file alias="wiki">res/icons/wiki.png</file>
     </qresource>
     <qresource prefix="/images">
         <file alias="about">res/images/about.png</file>

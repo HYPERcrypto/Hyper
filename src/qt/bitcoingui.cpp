@@ -220,14 +220,14 @@ void BitcoinGUI::createActions()
 {
     QActionGroup *tabGroup = new QActionGroup(this);
 
-    actionBittrex = new QAction(QIcon(":/icons/bittrex"), tr(""), this);
-    actionBittrex->setStatusTip(tr("Buy and Sell Hyper at Bittrex "));
-    actionBittrex->setToolTip(actionBittrex->statusTip());
-
     actionWiki = new QAction(QIcon(":/icons/wiki"), tr(""), this);
     actionWiki->setStatusTip(tr("Hyper wiki"));
     actionWiki->setToolTip(actionWiki->statusTip());
 
+    actionBittrex = new QAction(QIcon(":/icons/bittrex"), tr(""), this);
+    actionBittrex->setStatusTip(tr("Buy and Sell Hyper at Bittrex "));
+    actionBittrex->setToolTip(actionBittrex->statusTip());
+	
     actionHome = new QAction(QIcon(":/icons/home"), tr(""), this);
     actionHome->setStatusTip(tr("Hypercrypto.com"));
     actionHome->setToolTip(actionHome->statusTip());
