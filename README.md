@@ -7,7 +7,7 @@
 | Block Time  | 30 seconds |
 | Block Rewards  | 72.5 HYPER  |
 | Stake  | 5% per month, compounding and added daily  |
-| RPC Port  | 72.5 HYPER  |
+| RPC Port  | 27554  |
 | Cryptographic Algorithm  | Scrypt  |
 | Difficulty Retarget  | 10 minutes |
 | Confirmations  | 100 for mined blocks and 3 for valid transactions  |
