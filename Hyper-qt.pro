@@ -324,9 +324,7 @@ QMAKE_EXTRA_COMPILERS += TSQM
 # "Other files" to show in Qt Creator
 OTHER_FILES += \
     doc/*.rst doc/*.txt doc/*.md README README.md res/bitcoin-qt.rc src/test/*.cpp src/test/*.h src/qt/test/*.cpp src/qt/test/*.h \
-    doc/README.md INSTALL.md LICENSE LICENSE.md .gitattributes .gitignore \
-    INSTALL.md \
-    LICENSE.md
+    doc/README.md INSTALL.md LICENSE LICENSE.md .gitattributes .gitignore INSTALL.md LICENSE.md doc/Doxyfile
 
 # platform specific defaults, if not overridden on command line
 isEmpty(BOOST_LIB_SUFFIX) {
