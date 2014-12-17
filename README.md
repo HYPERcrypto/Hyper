@@ -13,4 +13,4 @@
 | Confirmations  | 100 for mined blocks and 3 for valid transactions  |
 
 <img src="https://i.imgur.com/jrA3pW0.gif" />
-<p><a href="https://bitcointalk.org/index.php?topic=624651.0">Join the Discussion at Bitcointalk!</a></p>
+<p><a href="https://bitcointalk.org/index.php?topic=624651.0" target="_blank">Join the Discussion at Bitcointalk!</a></p>
