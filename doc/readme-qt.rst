@@ -1,5 +1,4 @@
 Hyper-qt: Qt GUI for Hyper
-===============================
 
 Build instructions
 ===================
@@ -109,6 +108,7 @@ Generation of QR codes
 
 libqrencode may be used to generate QRCode images for payment requests.
 It can be downloaded from http://fukuchi.org/works/qrencode/index.html.en, or installed via your package manager. Pass the USE_QRCODE
+
 flag to qmake to control this:
 
 +--------------+--------------------------------------------------------------------------+
