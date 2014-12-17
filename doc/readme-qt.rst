@@ -1,6 +1,4 @@
-Hyper-qt: Qt GUI for Hyper
-
-Build instructions
+Hyper-qt Build instructions
 ===================
 
 Debian
