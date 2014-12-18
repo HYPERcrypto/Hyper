@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>740</width>
-    <height>450</height>
+    <height>491</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -36,7 +36,7 @@
           </font>
          </property>
          <property name="text">
-          <string>Hyper Core</string>
+          <string>Hyper-qt</string>
          </property>
         </widget>
        </item>
