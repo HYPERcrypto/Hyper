@@ -1,4 +1,4 @@
-<h1>HYPER Coding Guidelines</h1>
+<h1>Hyper Coding Guidelines</h1>
 
 Please be consistent with the existing coding style.
 
