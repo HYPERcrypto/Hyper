@@ -1,4 +1,4 @@
-<h1>Documentation</h1>
+<h1>Hyper Docs</h1>
 
 Copyright (c) 2014 Hyper Developers <br />
 Copyright (c) 2013 NovaCoin Developers <br />
