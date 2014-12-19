@@ -653,8 +653,6 @@ bool AppInit2()
 
     BOOST_FOREACH(string strDest, mapMultiArgs["-seednode"])
         AddOneShot(strDest);
-
-    // TODO: replace this by DNSseed
     // AddOneShot(string(""));
 
     // ********************************************************* Step 7: load blockchain

@@ -1,7 +1,4 @@
-Bitcoin-qt: Qt4 GUI for Bitcoin
-===============================
-
-Build instructions
+Hyper-qt Build instructions
 ===================
 
 Debian
@@ -12,9 +9,9 @@ distribution are installed, for Debian and Ubuntu these are:
 
 ::
 
-    apt-get install qt4-qmake libqt4-dev build-essential libboost-dev libboost-system-dev \
+    apt-get install build-essential libboost-dev libboost-system-dev \
         libboost-filesystem-dev libboost-program-options-dev libboost-thread-dev \
-        libssl-dev libdb4.8++-dev
+        libssl-dev libdb++-dev qt4-qmake libqt4-dev
 
 then execute the following:
 
@@ -58,8 +55,8 @@ Mac OS X
 
 ::
 
-	sudo port selfupdate
-	sudo port install boost db48 miniupnpc
+        sudo port selfupdate
+        sudo port install boost db48 miniupnpc
 
 - Open the .pro file in Qt Creator and build as normal (cmd-B)
 
@@ -107,8 +104,9 @@ FreeDesktop notification interface through DBUS using the following qmake option
 Generation of QR codes
 -----------------------
 
-libqrencode may be used to generate QRCode images for payment requests. 
-It can be downloaded from http://fukuchi.org/works/qrencode/index.html.en, or installed via your package manager. Pass the USE_QRCODE 
+libqrencode may be used to generate QRCode images for payment requests.
+It can be downloaded from http://fukuchi.org/works/qrencode/index.html.en, or installed via your package manager. Pass the USE_QRCODE
+
 flag to qmake to control this:
 
 +--------------+--------------------------------------------------------------------------+

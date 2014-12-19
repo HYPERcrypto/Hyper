@@ -1,6 +1,8 @@
-Copyright (c) 2014 Hyper Developers
-Copyright (c) 2011-2012 PPCoin Developers
-Copyright (c) 2009-2012 Bitcoin Developers
+<h1>Hyper License</h1>
+
+Copyright (c) 2014 Hyper Developers <br />
+Copyright (c) 2011-2012 PPCoin Developers <br />
+Copyright (c) 2009-2012 Bitcoin Developers <br />
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
