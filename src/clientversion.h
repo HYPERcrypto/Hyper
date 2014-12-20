@@ -9,7 +9,7 @@
 #define CLIENT_VERSION_MAJOR       1
 #define CLIENT_VERSION_MINOR       5
 #define CLIENT_VERSION_REVISION    3
-#define CLIENT_VERSION_BUILD       0
+#define CLIENT_VERSION_BUILD       1
 
 // Updating form 1.5.0 to newer versions will require a new full sync or bootstrap. Please see forum or contact developers.
 // 1.5.1+ will not work with old db files!
