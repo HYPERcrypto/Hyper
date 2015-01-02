@@ -75,6 +75,9 @@ private:
 
     QMenuBar *appMenuBar;
     QAction *overviewAction;
+    QAction *actionBittrex;
+    QAction *actionHome;
+    QAction *actionWiki;
     QAction *historyAction;
     QAction *quitAction;
     QAction *sendCoinsAction;
@@ -87,7 +90,13 @@ private:
     QAction *toggleHideAction;
     QAction *exportAction;
     QAction *encryptWalletAction;
+    QAction *unlockWalletAction;
+    QAction *lockWalletAction;
+    QAction *checkWalletAction;
+    QAction *repairWalletAction;
     QAction *backupWalletAction;
+    QAction *dumpWalletAction;
+    QAction *importWalletAction;
     QAction *changePassphraseAction;
     QAction *aboutQtAction;
     QAction *openRPCConsoleAction;
@@ -172,17 +181,32 @@ private slots:
     void incomingTransaction(const QModelIndex & parent, int start, int end);
     /** Encrypt the wallet */
     void encryptWallet(bool status);
+    /** Check the wallet */
+    void checkWallet();
+    /** Repair the wallet */
+    void repairWallet();
+    /** Import/Export the wallet's keys */
+    void dumpWallet();
+    void importWallet();
     /** Backup the wallet */
     void backupWallet();
     /** Change encrypted wallet passphrase */
     void changePassphrase();
     /** Ask for passphrase to unlock wallet temporarily */
+    /** Allow user to lock wallet */
     void unlockWallet();
+    /** Ask for passphrase to unlock wallet for the session to mint */
+    void unlockWalletForMint();
+    /** Allow user to lock wallet */
+    void lockWallet();
 
     /** Show window if hidden, unminimize when minimized, rise when obscured or show if hidden and fToggleHidden is true */
     void showNormalIfMinimized(bool fToggleHidden = false);
     /** simply calls showNormalIfMinimized(true) for use in SLOT() macro */
     void toggleHidden();
+    void openBittrex();
+    void openHome();
+    void openWiki();
 };
 
 #endif

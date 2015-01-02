@@ -24,6 +24,7 @@
         <file alias="add">res/icons/add.png</file>
         <file alias="bitcoin_testnet">res/icons/Hyper-128.png</file>
         <file alias="toolbar_testnet">res/icons/Hyper-16.png</file>
+        <file alias="qtlogo">res/icons/Qtlogo.png</file>
         <file alias="edit">res/icons/edit.png</file>
         <file alias="history">res/icons/history.png</file>
         <file alias="overview">res/icons/overview.png</file>
@@ -40,6 +41,13 @@
         <file alias="filesave">res/icons/filesave.png</file>
         <file alias="qrcode">res/icons/qrcode.png</file>
         <file alias="debugwindow">res/icons/debugwindow.png</file>
+        <file alias="import">res/icons/import.png</file>
+        <file alias="export2">res/icons/export2.png</file>
+        <file alias="inspect">res/icons/inspect.png</file>
+        <file alias="repair">res/icons/repair.png</file>
+        <file alias="bittrex">res/icons/bittrex.png</file>
+        <file alias="home">res/icons/hyper2.png</file>
+        <file alias="wiki">res/icons/wiki.png</file>
     </qresource>
     <qresource prefix="/images">
         <file alias="about">res/images/about.png</file>
@@ -48,6 +56,9 @@
     </qresource>
     <qresource prefix="/movies">
         <file alias="update_spinner">res/movies/update_spinner.mng</file>
+    </qresource>
+    <qresource prefix="/text">
+        <file>res/text/style.qss</file>
     </qresource>
     <qresource prefix="/translations">
         <file alias="af_ZA">locale/bitcoin_af_ZA.qm</file>
@@ -115,5 +126,8 @@
         <file alias="vi_VN">locale/bitcoin_vi_VN.qm</file>
         <file alias="zh_CN">locale/bitcoin_zh_CN.qm</file>
         <file alias="zh_TW">locale/bitcoin_zh_TW.qm</file>
+    </qresource>
+    <qresource prefix="/Background">
+        <file>res/images/abstract-background-13.png</file>
     </qresource>
 </RCC>

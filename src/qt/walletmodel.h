@@ -90,11 +90,16 @@ public:
     // Wallet encryption
     bool setWalletEncrypted(bool encrypted, const SecureString &passphrase);
     // Passphrase only needed when unlocking
-    bool setWalletLocked(bool locked, const SecureString &passPhrase=SecureString());
+    bool setWalletLocked(bool locked, const SecureString &passPhrase=SecureString(), bool formint=false);
     bool changePassphrase(const SecureString &oldPass, const SecureString &newPass);
     // Wallet backup
     bool backupWallet(const QString &filename);
-
+    // Wallet Repair
+    void checkWallet(int& nMismatchSpent, qint64& nBalanceInQuestion, int& nOrphansFound);
+    void repairWallet(int& nMismatchSpent, qint64& nBalanceInQuestion, int& nOrphansFound);
+    //Wallet Inport/Export
+    bool dumpWallet(const QString &filename);
+    bool importWallet(const QString &filename);
     // RAI object for unlocking wallet, returned by requestUnlock()
     class UnlockContext
     {

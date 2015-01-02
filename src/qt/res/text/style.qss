@@ -1,0 +1,12 @@
+
+QMenu { background-color: #000000; background: #000000; color: #FFFF00;}
+QMenu::separator { background: #FFFF00; height: 1px;}
+QMenu::item:selected { background-color: #FFFF00; color: #000000 ;}
+QMenuBar { background-color: #000000; background: #000000; color: #FFFF00;}
+QMenuBar::item { background-color: #000000 ; color: #FFFF00;}
+QMenuBar::item:selected { background-color: #FFFF00; color: #000000;}
+QToolTip { border: none;}
+QTableView { color: #ffff00; border-style: none; selection-background-color: #ffffff; alternate-background-color: #444444; selection-color: #000000 ; border: 0px solid black;}
+QHeaderView { color: #ffff00; background-color: transparent; background-image: none;}
+QHeaderView::section { color: #ffff00; background-color: transparent;}
+background-color: #000000; background: #000000; color: #FFFF00; font: 75 bold 10pt; background-image: url(:/Background/res/images/abstract-background-13.png);

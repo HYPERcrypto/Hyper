@@ -28,7 +28,7 @@ void EnsureWalletIsUnlocked()
 {
     if (pwalletMain->IsLocked())
         throw JSONRPCError(RPC_WALLET_UNLOCK_NEEDED, "Error: Please enter the wallet passphrase with walletpassphrase first.");
-    if (fWalletUnlockMintOnly)
+    if (pwalletMain->fWalletUnlockMintOnly)
         throw JSONRPCError(RPC_WALLET_UNLOCK_NEEDED, "Error: Wallet unlocked for block minting only.");
 }
 
@@ -73,6 +73,7 @@ Value getinfo(const Array& params, bool fHelp)
     obj.push_back(Pair("version",       FormatFullVersion()));
     obj.push_back(Pair("protocolversion",(int)PROTOCOL_VERSION));
     obj.push_back(Pair("walletversion", pwalletMain->GetVersion()));
+    obj.push_back(Pair("encrypted",     pwalletMain->IsCrypted()));
     obj.push_back(Pair("balance",       ValueFromAmount(pwalletMain->GetBalance())));
     obj.push_back(Pair("newmint",       ValueFromAmount(pwalletMain->GetNewMint())));
     obj.push_back(Pair("stake",         ValueFromAmount(pwalletMain->GetStake())));
@@ -86,8 +87,16 @@ Value getinfo(const Array& params, bool fHelp)
     obj.push_back(Pair("keypoololdest", (boost::int64_t)pwalletMain->GetOldestKeyPoolTime()));
     obj.push_back(Pair("keypoolsize",   (int)pwalletMain->GetKeyPoolSize()));
     obj.push_back(Pair("paytxfee",      ValueFromAmount(nTransactionFee)));
-    if (pwalletMain->IsCrypted())
+    obj.push_back(Pair("mininput",      ValueFromAmount(nMinimumInputValue)));
+    if (pwalletMain->IsCrypted() && !pwalletMain->IsLocked() )
+    {
         obj.push_back(Pair("unlocked_until", (boost::int64_t)nWalletUnlockTime / 1000));
+        obj.push_back(Pair("unlocked_until_pretty", DateTimeStrFormat(nWalletUnlockTime / 1000)));
+    }
+    else if(pwalletMain->IsCrypted() && pwalletMain->IsLocked() )
+    {
+        obj.push_back(Pair("unlocked_until", "Locked"));
+    }
     obj.push_back(Pair("errors",        GetWarnings("statusbar")));
     return obj;
 }
@@ -848,6 +857,29 @@ Value addmultisigaddress(const Array& params, bool fHelp)
     return CBitcoinAddress(innerID).ToString();
 }
 
+Value addredeemscript(const Array& params, bool fHelp)
+{
+    if (fHelp || params.size() < 1 || params.size() > 2)
+    {
+        string msg = "addredeemscript <redeemScript> [account]\n"
+            "Add a P2SH address with a specified redeemScript to the wallet.\n"
+            "If [account] is specified, assign address to [account].";
+        throw runtime_error(msg);
+    }
+
+    string strAccount;
+    if (params.size() > 1)
+        strAccount = AccountFromValue(params[1]);
+
+    // Construct using pay-to-script-hash:
+    vector<unsigned char> innerData = ParseHexV(params[0], "redeemScript");
+    CScript inner(innerData.begin(), innerData.end());
+    CScriptID innerID = inner.GetID();
+    pwalletMain->AddCScript(inner);
+
+    pwalletMain->SetAddressBookName(innerID, strAccount);
+    return CBitcoinAddress(innerID).ToString();
+}
 
 struct tallyitem
 {
@@ -1290,7 +1322,6 @@ Value gettransaction(const Array& params, bool fHelp)
         uint256 hashBlock = 0;
         if (GetTransaction(hash, tx, hashBlock))
         {
-            entry.push_back(Pair("txid", hash.GetHex()));
             TxToJSON(tx, 0, entry);
             if (hashBlock == 0)
                 entry.push_back(Pair("confirmations", 0));
@@ -1304,8 +1335,6 @@ Value gettransaction(const Array& params, bool fHelp)
                     if (pindex->IsInMainChain())
                     {
                         entry.push_back(Pair("confirmations", 1 + nBestHeight - pindex->nHeight));
-                        entry.push_back(Pair("txntime", (boost::int64_t)tx.nTime));
-                        entry.push_back(Pair("time", (boost::int64_t)pindex->nTime));
                     }
                     else
                         entry.push_back(Pair("confirmations", 0));
@@ -1445,14 +1474,19 @@ Value walletpassphrase(const Array& params, bool fHelp)
             "Stores the wallet decryption key in memory for <timeout> seconds.");
 
     NewThread(ThreadTopUpKeyPool, NULL);
-    int64* pnSleepTime = new int64(params[1].get_int64());
-    NewThread(ThreadCleanWalletPassphrase, pnSleepTime);
 
     // ppcoin: if user OS account compromised prevent trivial sendmoney commands
     if (params.size() > 2)
-        fWalletUnlockMintOnly = params[2].get_bool();
+        pwalletMain->fWalletUnlockMintOnly = params[2].get_bool();
     else
-        fWalletUnlockMintOnly = false;
+        pwalletMain->fWalletUnlockMintOnly = false;
+
+    //Zero unlock time means forever, well 68 years, forever for crypto.
+    int64* nUnlockTime = (params[1].get_int64() == 0)
+        ? new int64(std::numeric_limits<int>::max())
+        : new int64(params[1].get_int64());
+
+    NewThread(ThreadCleanWalletPassphrase, nUnlockTime);
 
     return Value::null;
 }
@@ -1571,6 +1605,7 @@ public:
         int nRequired;
         ExtractDestinations(subscript, whichType, addresses, nRequired);
         obj.push_back(Pair("script", GetTxnOutputType(whichType)));
+        obj.push_back(Pair("hex", HexStr(subscript.begin(), subscript.end())));
         Array a;
         BOOST_FOREACH(const CTxDestination& addr, addresses)
             a.push_back(CBitcoinAddress(addr).ToString());
@@ -1699,14 +1734,16 @@ Value checkwallet(const Array& params, bool fHelp)
 
     int nMismatchSpent;
     int64 nBalanceInQuestion;
-    pwalletMain->FixSpentCoins(nMismatchSpent, nBalanceInQuestion, true);
+    int nOrphansFound;
+    pwalletMain->FixSpentCoins(nMismatchSpent, nBalanceInQuestion, nOrphansFound, true);
     Object result;
-    if (nMismatchSpent == 0)
+    if (nMismatchSpent == 0 && nOrphansFound == 0)
         result.push_back(Pair("wallet check passed", true));
     else
     {
         result.push_back(Pair("mismatched spent coins", nMismatchSpent));
         result.push_back(Pair("amount in question", ValueFromAmount(nBalanceInQuestion)));
+        result.push_back(Pair("orphan blocks found", nOrphansFound));
     }
     return result;
 }
@@ -1722,14 +1759,16 @@ Value repairwallet(const Array& params, bool fHelp)
 
     int nMismatchSpent;
     int64 nBalanceInQuestion;
-    pwalletMain->FixSpentCoins(nMismatchSpent, nBalanceInQuestion);
+    int nOrphansFound;
+    pwalletMain->FixSpentCoins(nMismatchSpent, nBalanceInQuestion,nOrphansFound);
     Object result;
-    if (nMismatchSpent == 0)
+    if (nMismatchSpent == 0 && nOrphansFound == 0)
         result.push_back(Pair("wallet check passed", true));
     else
     {
         result.push_back(Pair("mismatched spent coins", nMismatchSpent));
         result.push_back(Pair("amount affected by repair", ValueFromAmount(nBalanceInQuestion)));
+        result.push_back(Pair("orphan blocks removed", nOrphansFound));
     }
     return result;
 }
