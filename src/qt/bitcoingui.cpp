@@ -83,7 +83,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
 	style.open(QFile::ReadOnly);
 	setStyleSheet(QString::fromUtf8(style.readAll()));
 	
-    resize(850, 550);
+    resize(900, 500);
     setWindowTitle(tr("Hyper") + " - " + tr("Wallet"));
 #ifndef Q_OS_MAC
     qApp->setWindowIcon(QIcon(":icons/bitcoin"));
@@ -126,20 +126,15 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
 
     centralWidget = new QStackedWidget(this);
     centralWidget->addWidget(overviewPage);
-        overviewPage->setStyleSheet("background-color: transparent");
-    overviewPage->setStyleSheet("background: transparent");
+		overviewPage->setStyleSheet("background: transparent;");
     centralWidget->addWidget(transactionsPage);
-        transactionsPage->setStyleSheet("background-color: black");
-    transactionsPage->setStyleSheet("background: black");
+		transactionsPage->setStyleSheet("background: transparent;");
     centralWidget->addWidget(addressBookPage);
-        addressBookPage->setStyleSheet("background-color: black");
-    addressBookPage->setStyleSheet("background: black");
+		addressBookPage->setStyleSheet("background: transparent;");
     centralWidget->addWidget(receiveCoinsPage);
-        receiveCoinsPage->setStyleSheet("background-color: black");
-    receiveCoinsPage->setStyleSheet("background: black");
+		receiveCoinsPage->setStyleSheet("background: transparent;");
     centralWidget->addWidget(sendCoinsPage);
-        sendCoinsPage->setStyleSheet("background-color: black");
-    sendCoinsPage->setStyleSheet("background: black");
+		sendCoinsPage->setStyleSheet("background: transparent;");
     setCentralWidget(centralWidget);
 
     // Create status bar
